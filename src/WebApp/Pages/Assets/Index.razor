@@ -1,0 +1,55 @@
+﻿@page "/assets/"
+@using WebApp.Services.Assets.Models
+@inject Services.Assets.IAssetsService AssetsService
+
+<h3>Assets</h3>
+
+@if (error == null)
+{
+    if (assets == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Broker</th>
+                    <th>Category</th>
+                    <th>Currency</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var asset in assets)
+                {
+                    <tr>
+                        <td>@asset.Name</td>
+                        <td>@asset.Broker</td>
+                        <td>@asset.Category</td>
+                        <td>@asset.Currency</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+
+@code {
+
+    private string error;
+    private Asset[] assets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await AssetsService.ListAllAssync();
+        assets = result.Value;
+        error = result.Error;
+    }
+}
