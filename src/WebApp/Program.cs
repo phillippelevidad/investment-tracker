@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebApp.Services.Assets;
 
 namespace WebApp
 {
@@ -15,8 +14,6 @@ namespace WebApp
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5001/") });
-
-            builder.Services.AddTransient<IAssetsService, AssetsService>();
 
             await builder.Build().RunAsync();
         }
