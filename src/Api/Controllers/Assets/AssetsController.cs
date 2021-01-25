@@ -1,9 +1,12 @@
-﻿using Api.Controllers.Assets.Models;
-using Api.Core.Application.Assets.Commands.AddAsset;
-using MediatR;
+﻿using Api.Core.Domain.Assets;
+using Api.Data;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Shared.Dtos;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Api.Controllers.Assets
@@ -12,61 +15,82 @@ namespace Api.Controllers.Assets
     [Route("api/assets")]
     public class AssetsController : Controller
     {
-        private readonly IMediator mediator;
+        private readonly InvestmentDbContext db;
+        private readonly IMapper mapper;
 
-        public AssetsController(IMediator mediator)
+        public AssetsController(InvestmentDbContext db, IMapper mapper)
         {
-            this.mediator = mediator;
+            this.db = db;
+            this.mapper = mapper;
         }
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetAsync(Guid id)
+        [ProducesResponseType(typeof(AssetDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var asset = await db.Assets.FindAsync(id);
+            if (asset == null) return NotFound();
+            return Ok(asset);
         }
 
         [HttpGet("")]
-        public IActionResult ListAllAsync()
+        [ProducesResponseType(typeof(AssetDto[]), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ListAllAsync()
         {
-            return Ok(new List<Asset>
-            {
-                new Asset
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "NuConta",
-                    Broker = "NuBank",
-                    Category = "Savings",
-                    Currency = "BRL"
-                },
-                new Asset
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Bova 11",
-                    Broker = "Clear",
-                    Category = "Stocks",
-                    Currency = "BRL"
-                },
-                new Asset
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "FI Cambial",
-                    Broker = "Órama",
-                    Category = "Hedge Funds",
-                    Currency = "USD"
-                }
-            });
+            var assets = await db.Assets.ToListAsync();
+            var dtos = assets.Select(asset => mapper.Map<AssetDto>(asset));
+            return Ok(assets);
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> AddAssetAsync()
+        [ProducesResponseType(typeof(AssetDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddAssetAsync(AssetDto dto)
         {
-            var command = new AddAssetCommand();
-            var result = await mediator.Send(command);
+            Asset asset;
 
-            if (result.IsSuccess)
-                return Created(Url.Action(nameof(GetAsync), new { id = command.Id }), null);
+            try
+            {
+                asset = new Asset(dto.Id, dto.Name, dto.Broker, dto.Category, dto.Currency);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-            else return BadRequest(result.Error);
+            await db.Assets.AddAsync(asset);
+            await db.SaveChangesAsync();
+
+            var url = Url.Action(nameof(GetAsync), new { id = dto.Id });
+            return Created(url, dto);
+        }
+
+        [HttpPatch("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddAssetAsync(Guid id, [FromBody] AssetDto dto)
+        {
+            var asset = await db.Assets.FindAsync(id);
+            if (asset == null) return NotFound();
+
+            try
+            {
+                asset.Name = dto.Name;
+                asset.Broker = dto.Broker;
+                asset.Category = dto.Category;
+                asset.Currency = dto.Currency;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            db.Assets.Update(asset);
+            await db.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

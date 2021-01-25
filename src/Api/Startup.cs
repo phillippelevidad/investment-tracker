@@ -7,6 +7,8 @@ using Microsoft.OpenApi.Models;
 using MediatR;
 using Api.Core.Application.Assets;
 using Api.Data;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Api
 {
@@ -24,8 +26,15 @@ namespace Api
             services.AddControllers();
 
             services.AddMediatR(typeof(Startup));
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<IAssetsRepository, AssetsRepository>();
+
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<InvestmentDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("InvestmentDbContext"));
+            });
 
             services.AddSwaggerGen(c =>
             {

@@ -17,13 +17,10 @@ namespace Api.Core.Application.Assets.Commands.AddAsset
 
         public async Task<Result> Handle(AddAssetCommand request, CancellationToken cancellationToken)
         {
-            var assetResult = Asset.Create(
+            var asset = new Asset(
                 request.Id, request.Name, request.Broker, request.Category, request.Currency);
 
-            if (assetResult.IsFailure)
-                return assetResult;
-
-            return await repository.AddAsync(assetResult.Value, cancellationToken);
+            return await repository.AddAsync(asset, cancellationToken);
         }
     }
 }

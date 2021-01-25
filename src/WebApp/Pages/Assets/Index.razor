@@ -1,45 +1,80 @@
 ﻿@page "/assets"
 @inject HttpClient Http
 
-<h3>Assets</h3>
 
 @if (assets == null)
 {
+    <h3>Assets</h3>
     <p><em>Loading...</em></p>
 }
 else
 {
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Asset</th>
-                <th>Broker</th>
-                <th>Category</th>
-                <th>Currency</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var asset in assets)
-            {
-                <tr>
-                    <td>@asset.Name</td>
-                    <td>@asset.Broker</td>
-                    <td>@asset.Category</td>
-                    <td>@asset.Currency</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Assets</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Broker</th>
+                        <th>Category</th>
+                        <th>Currency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var asset in assets)
+                    {
+                        var assetId = asset.Id;
+                        <tr>
+                            <td><button @onclick="@(async e => await EditAssetAsync(e, assetId))" class="btn btn-link btn-anchor">@asset.Name</button></td>
+                            <td>@asset.Broker</td>
+                            <td>@asset.Category</td>
+                            <td>@asset.Currency</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <button class="btn btn-outline-dark" @onclick="AddAsset">
+                <i class="fas fa-plus"></i>
+                Add
+            </button>
+        </div>
+        <div class="col-md-4">
+            <Editor @ref="Editor" SavedCallback="@OnEditorSavedAsync" />
+        </div>
+    </div>
 }
 
 @code {
-    private Asset[] assets;
+    private AssetDto[] assets;
+
+    protected Editor Editor { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        assets = await Http.GetFromJsonAsync<Asset[]>("api/assets");
+        await LoadAssetsAsync();
     }
 
-    public record Asset(
-        Guid Id, string Name, string Broker, string Category, string Currency);
+    private async Task LoadAssetsAsync()
+    {
+        assets = await Http.GetFromJsonAsync<AssetDto[]>("api/assets");
+    }
+
+    private async void OnEditorSavedAsync()
+    {
+        await LoadAssetsAsync();
+    }
+
+    private void AddAsset()
+    {
+        Editor.Reset();
+        Editor.Show();
+    }
+
+    private async Task EditAssetAsync(EventArgs e, Guid id)
+    {
+        await Editor.LoadAssetAsync(id);
+        Editor.Show();
+    }
 }

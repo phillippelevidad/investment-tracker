@@ -1,0 +1,118 @@
+﻿@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+
+@if (isVisible)
+{
+    <section>
+        <h3>@(asset?.Name ?? "New asset")</h3>
+
+        <EditForm Model="@asset" OnValidSubmit="@HandleValidSubmitAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Name</label>
+                <InputText id="name" @bind-Value="asset.Name" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Broker</label>
+                <InputText id="name" @bind-Value="asset.Broker" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Category</label>
+                <InputText id="name" @bind-Value="asset.Category" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Currency</label>
+                <InputText id="name" @bind-Value="asset.Currency" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check"></i>
+                Save
+            </button>
+        </EditForm>
+    </section>
+}
+
+@code {
+    private Asset asset;
+    private bool isVisible;
+
+    [Parameter]
+    public EventCallback SavedCallback { get; set; }
+
+    public async Task LoadAssetAsync(Guid id)
+    {
+        var dto = await Http.GetFromJsonAsync<AssetDto>($"api/assets/{id}"); 
+        asset = new Asset
+        {
+            Id = id,
+            Name = dto.Name,
+            Broker = dto.Broker,
+            Category = dto.Category,
+            Currency = dto.Currency
+        };
+
+        StateHasChanged();
+    }
+
+    public void Reset()
+    {
+        asset = new Asset();
+    }
+
+    public void Show()
+    {
+        isVisible = true;
+        StateHasChanged();
+    }
+
+    public void Hide()
+    {
+        isVisible = false;
+        StateHasChanged();
+    }
+
+    public async Task HandleValidSubmitAsync()
+    {
+        isVisible = false;
+
+        if (asset.Id == Guid.Empty)
+        {
+            asset.Id = Guid.NewGuid();
+            await Http.PostAsJsonAsync("api/assets", asset);
+        }
+        else
+        {
+            await Http.PatchAsync($"api/assets/{asset.Id}", JsonContent.Create(asset));
+        }
+
+        await SavedCallback.InvokeAsync();
+        StateHasChanged();
+    }
+
+    public class Asset
+    {
+        public Guid Id { get; set; }
+
+        [Required]
+        [StringLength(30, MinimumLength = 3)]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(30, MinimumLength = 3)]
+        public string Broker { get; set; }
+
+        [Required]
+        [StringLength(30, MinimumLength = 3)]
+        public string Category { get; set; }
+
+        [Required]
+        [StringLength(3, MinimumLength = 3)]
+        public string Currency { get; set; }
+    }
+}

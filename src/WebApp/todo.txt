@@ -1,0 +1,7 @@
+﻿AssetsController.AddAssetAsync
+url parece estar ficando nula por algum motivo, o que gera exceção do servidor
+ArgumentNullException: Value cannot be null. (Parameter 'uri')
+
+Assets/Editor.razor > HandleValidSubmitAsync
+fluxo para em await SavedCallback.InvokeAsync()
+não atualiza a tela
