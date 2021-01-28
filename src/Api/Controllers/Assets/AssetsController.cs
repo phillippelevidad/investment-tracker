@@ -27,7 +27,7 @@ namespace Api.Controllers.Assets
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(AssetDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAsync(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
             var asset = await db.Assets.FindAsync(id);
             if (asset == null) return NotFound();
@@ -36,7 +36,7 @@ namespace Api.Controllers.Assets
 
         [HttpGet("")]
         [ProducesResponseType(typeof(AssetDto[]), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ListAllAsync()
+        public async Task<IActionResult> ListAll()
         {
             var assets = await db.Assets.ToListAsync();
             var dtos = assets.Select(asset => mapper.Map<AssetDto>(asset));
@@ -46,7 +46,7 @@ namespace Api.Controllers.Assets
         [HttpPost("")]
         [ProducesResponseType(typeof(AssetDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddAssetAsync(AssetDto dto)
+        public async Task<IActionResult> AddAsset(AssetDto dto)
         {
             Asset asset;
 
@@ -62,7 +62,7 @@ namespace Api.Controllers.Assets
             await db.Assets.AddAsync(asset);
             await db.SaveChangesAsync();
 
-            var url = Url.Action(nameof(GetAsync), new { id = dto.Id });
+            var url = Url.Action(nameof(Get), new { id = dto.Id });
             return Created(url, dto);
         }
 
@@ -70,7 +70,7 @@ namespace Api.Controllers.Assets
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddAssetAsync(Guid id, [FromBody] AssetDto dto)
+        public async Task<IActionResult> AddAsset(Guid id, [FromBody] AssetDto dto)
         {
             var asset = await db.Assets.FindAsync(id);
             if (asset == null) return NotFound();
@@ -88,6 +88,20 @@ namespace Api.Controllers.Assets
             }
 
             db.Assets.Update(asset);
+            await db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RemoveAsset(Guid id)
+        {
+            var asset = await db.Assets.FindAsync(id);
+            if (asset == null) return NotFound();
+
+            db.Assets.Remove(asset);
             await db.SaveChangesAsync();
 
             return NoContent();

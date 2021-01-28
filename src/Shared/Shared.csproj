@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+      <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\fluentguard\src\FluentGuard\FluentGuard.csproj" />
+  </ItemGroup>
 
 </Project>

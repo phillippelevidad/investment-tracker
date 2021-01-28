@@ -1,6 +1,4 @@
 ﻿@page "/assets"
-@inject HttpClient Http
-
 
 @if (assets == null)
 {
@@ -41,40 +39,7 @@ else
             </button>
         </div>
         <div class="col-md-4">
-            <Editor @ref="Editor" SavedCallback="@OnEditorSavedAsync" />
+            <Editor @ref="Editor" SavedCallback="@OnEditorSavedOrRemovedAsync" RemovedCallback="@OnEditorSavedOrRemovedAsync" />
         </div>
     </div>
-}
-
-@code {
-    private AssetDto[] assets;
-
-    protected Editor Editor { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadAssetsAsync();
-    }
-
-    private async Task LoadAssetsAsync()
-    {
-        assets = await Http.GetFromJsonAsync<AssetDto[]>("api/assets");
-    }
-
-    private async void OnEditorSavedAsync()
-    {
-        await LoadAssetsAsync();
-    }
-
-    private void AddAsset()
-    {
-        Editor.Reset();
-        Editor.Show();
-    }
-
-    private async Task EditAssetAsync(EventArgs e, Guid id)
-    {
-        await Editor.LoadAssetAsync(id);
-        Editor.Show();
-    }
 }
