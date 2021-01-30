@@ -1,4 +1,5 @@
-﻿using Api.Core.Domain.Assets;
+﻿using Api.Core.Domain;
+using Api.Core.Domain.Assets;
 using System;
 using System.Linq;
 
@@ -20,9 +21,9 @@ namespace Api.Data
 
             context.Assets.AddRange(new Asset[]
             {
-                new Asset(Guid.NewGuid(), "NuConta", "NuBank", "Savings", "BRL"),
-                new Asset(Guid.NewGuid(), "Bova 11", "Clear", "Stocks", "BRL"),
-                new Asset(Guid.NewGuid(), "Occam FI Cambial", "Clear", "Hedge Funds", "USD")
+                new Asset(Guid.NewGuid(), "NuConta", "NuBank", "Savings", (Currency)"BRL"),
+                new Asset(Guid.NewGuid(), "Bova 11", "Clear", "Stocks", (Currency)"BRL"),
+                new Asset(Guid.NewGuid(), "Occam FI Cambial", "Clear", "Hedge Funds", (Currency)"USD")
             });
 
             context.SaveChanges();

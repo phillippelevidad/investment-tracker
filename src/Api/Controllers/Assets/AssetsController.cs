@@ -1,4 +1,5 @@
-﻿using Api.Core.Domain.Assets;
+﻿using Api.Core.Domain;
+using Api.Core.Domain.Assets;
 using Api.Data;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +32,7 @@ namespace Api.Controllers.Assets
         {
             var asset = await db.Assets.FindAsync(id);
             if (asset == null) return NotFound();
-            return Ok(asset);
+            return Ok(mapper.Map<AssetDto>(asset));
         }
 
         [HttpGet("")]
@@ -40,7 +41,7 @@ namespace Api.Controllers.Assets
         {
             var assets = await db.Assets.ToListAsync();
             var dtos = assets.Select(asset => mapper.Map<AssetDto>(asset));
-            return Ok(assets);
+            return Ok(dtos);
         }
 
         [HttpPost("")]
@@ -52,7 +53,7 @@ namespace Api.Controllers.Assets
 
             try
             {
-                asset = new Asset(dto.Id, dto.Name, dto.Broker, dto.Category, dto.Currency);
+                asset = new Asset(dto.Id, dto.Name, dto.Broker, dto.Category, new Currency(dto.Currency));
             }
             catch (Exception ex)
             {
@@ -70,7 +71,7 @@ namespace Api.Controllers.Assets
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddAsset(Guid id, [FromBody] AssetDto dto)
+        public async Task<IActionResult> UpdateAsset(Guid id, [FromBody] AssetDto dto)
         {
             var asset = await db.Assets.FindAsync(id);
             if (asset == null) return NotFound();
@@ -80,7 +81,7 @@ namespace Api.Controllers.Assets
                 asset.Name = dto.Name;
                 asset.Broker = dto.Broker;
                 asset.Category = dto.Category;
-                asset.Currency = dto.Currency;
+                asset.Currency = new Currency(dto.Currency);
             }
             catch (Exception ex)
             {

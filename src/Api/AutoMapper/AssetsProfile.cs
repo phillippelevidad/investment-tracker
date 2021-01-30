@@ -8,7 +8,8 @@ namespace Api.AutoMapper
     {
         public AssetsProfile()
         {
-            CreateMap<Asset, AssetDto>();
+            CreateMap<Asset, AssetDto>()
+                .ForMember(x => x.Currency, options => options.MapFrom(source => source.Currency.Value));
         }
     }
 }

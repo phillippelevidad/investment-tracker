@@ -10,5 +10,11 @@ namespace Api.Data
         }
 
         public DbSet<Asset> Assets { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(InvestmentDbContext).Assembly);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

@@ -9,59 +9,63 @@ namespace Api.Core.Domain.Assets
         private string name;
         private string broker;
         private string category;
-        private string currency;
-        private DateTime addedDateTime;
+        private Currency currency;
 
         private Asset()
         {
         }
 
-        public Asset(Guid id, string name, string broker, string category, string currency)
+        public Asset(Guid id, string name, string broker, string category, Currency currency)
         {
-            Guard
-                .With(id, "Id").NotDefault()
-                .With(name, "Name").NotNullOrEmpty().Length(3, 30)
-                .With(broker, "Broker").NotNullOrEmpty().Length(3, 30)
-                .With(category, "Category").NotNullOrEmpty().Length(3, 30)
-                .With(currency, "Currency").NotNullOrEmpty().Length(3)
-                .ThrowIfError();
-
             Id = id;
-            Name = name;
-            Broker = broker;
-            Category = category;
-            Currency = currency.ToUpper();
+            this.name = name;
+            this.broker = broker;
+            this.category = category;
+            this.currency = currency;
             AddedDateTime = DateTime.UtcNow;
+
+            Validate();
         }
 
         public string Name
         {
             get => name;
-            set => name = Guard.With(value, nameof(Name)).ThrowIfError().Input;
+            set { name = value; Validate(); }
         }
 
         public string Broker
         {
             get => broker;
-            set => broker = Guard.With(value, nameof(Broker)).ThrowIfError().Input;
+            set { broker = value; Validate(); }
         }
 
         public string Category
         {
             get => category;
-            set => category = Guard.With(value, nameof(Category)).ThrowIfError().Input;
+            set { category = value; Validate(); }
         }
 
-        public string Currency
+        public Currency Currency
         {
             get => currency;
-            set => currency = Guard.With(value, nameof(Category)).ThrowIfError().Input.ToUpper();
+            set { currency = value; Validate(); }
         }
 
         public DateTime AddedDateTime
         {
-            get => addedDateTime;
-            private set => addedDateTime = value;
+            get;
+            private set;
+        }
+
+        private void Validate()
+        {
+            Guard
+                .With(Id, "Id").NotDefault()
+                .With(Name, "Name").NotNullOrEmpty().Length(3, 30)
+                .With(Broker, "Broker").NotNullOrEmpty().Length(3, 30)
+                .With(Category, "Category").NotNullOrEmpty().Length(3, 30)
+                .With(Currency, "Currency").NotNull()
+                .ThrowIfError();
         }
     }
 }
