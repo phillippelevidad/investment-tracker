@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Api.Core.Application.Assets.Commands.AddAsset
 {
-    public class AddAssetCommand : IRequest<Result>
+    public class UpdateAssetCommand : IRequest<Result>
     {
         [Required]
         [NotNull]

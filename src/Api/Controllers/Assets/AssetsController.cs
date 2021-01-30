@@ -1,4 +1,5 @@
-﻿using Api.Core.Domain;
+﻿using Api.Core.Application.Assets.Commands.AddAsset;
+using Api.Core.Domain;
 using Api.Core.Domain.Assets;
 using Api.Data;
 using AutoMapper;
@@ -47,13 +48,16 @@ namespace Api.Controllers.Assets
         [HttpPost("")]
         [ProducesResponseType(typeof(AssetDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddAsset(AssetDto dto)
+        public async Task<IActionResult> AddAsset(AddAssetCommand dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             Asset asset;
 
             try
             {
-                asset = new Asset(dto.Id, dto.Name, dto.Broker, dto.Category, new Currency(dto.Currency));
+                asset = new Asset(dto.Id.Value, dto.Name, dto.Broker, dto.Category, new Currency(dto.Currency));
             }
             catch (Exception ex)
             {
@@ -71,7 +75,7 @@ namespace Api.Controllers.Assets
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateAsset(Guid id, [FromBody] AssetDto dto)
+        public async Task<IActionResult> UpdateAsset(Guid id, [FromBody] UpdateAssetCommand dto)
         {
             var asset = await db.Assets.FindAsync(id);
             if (asset == null) return NotFound();

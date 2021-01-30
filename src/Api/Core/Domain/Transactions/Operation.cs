@@ -1,6 +1,6 @@
 ﻿namespace Api.Core.Domain.Transactions
 {
-    public class Operation : Enumeration<string>
+    public class Operation : Enumeration<Operation, string>
     {
         public static readonly Operation Purchase = new Operation("purchase", nameof(Purchase), 1m);
         public static readonly Operation Sale = new Operation("sale", nameof(Sale), -1m);

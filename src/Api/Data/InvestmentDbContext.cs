@@ -1,4 +1,5 @@
 ﻿using Api.Core.Domain.Assets;
+using Api.Core.Domain.Transactions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Data
@@ -10,6 +11,7 @@ namespace Api.Data
         }
 
         public DbSet<Asset> Assets { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

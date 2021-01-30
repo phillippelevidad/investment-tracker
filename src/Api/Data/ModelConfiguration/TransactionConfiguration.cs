@@ -14,7 +14,7 @@ namespace Api.Data.ModelConfiguration
             builder.Property(x => x.Operation)
                 .HasConversion(
                     operation => operation.Id,
-                    str => Operation.FromDisplayName<Operation>(str));
+                    str => Operation.FromName(str));
 
             builder.OwnsOne(x => x.UnitPrice, b =>
             {

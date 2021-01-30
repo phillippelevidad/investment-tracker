@@ -30,8 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Application\Assets\Commands\RemoveAsset\" />
-    <Folder Include="Core\Application\Assets\Commands\UpdateAsset\" />
     <Folder Include="Queries\" />
   </ItemGroup>
 
