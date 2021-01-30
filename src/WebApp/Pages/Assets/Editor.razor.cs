@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Core.Application.Assets.Commands.AddOrUpdateAsset;
+using Microsoft.AspNetCore.Components;
 using Shared.Dtos;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -10,22 +10,18 @@ namespace WebApp.Pages.Assets
 {
     public partial class Editor
     {
-        private Asset asset;
-        private bool isVisible;
+        protected AddOrUpdateAssetCommand Asset { get; set; }
+        private bool IsVisible { get; set; }
+        protected bool IsUpdate { get; set; }
 
-        [Parameter]
-        public EventCallback SavedCallback { get; set; }
-
-        [Parameter]
-        public EventCallback RemovedCallback { get; set; }
-
-        [Inject]
-        public HttpClient Http { get; set; }
+        [Parameter] public EventCallback SavedCallback { get; set; }
+        [Parameter] public EventCallback RemovedCallback { get; set; }
+        [Inject] public HttpClient Http { get; set; }
 
         public async Task LoadAssetAsync(Guid id)
         {
             var dto = await Http.GetFromJsonAsync<AssetDto>($"api/assets/{id}");
-            asset = new Asset
+            Asset = new AddOrUpdateAssetCommand
             {
                 Id = id,
                 Name = dto.Name,
@@ -34,41 +30,45 @@ namespace WebApp.Pages.Assets
                 Currency = dto.Currency
             };
 
+            IsUpdate = true;
             StateHasChanged();
         }
 
         public void Reset()
         {
-            asset = new Asset();
+            IsUpdate = false;
+            Asset = new AddOrUpdateAssetCommand
+            {
+                Id = Guid.NewGuid()
+            };
         }
 
         public void Show()
         {
-            isVisible = true;
+            IsVisible = true;
             StateHasChanged();
         }
 
         public void Hide()
         {
-            isVisible = false;
+            IsVisible = false;
             StateHasChanged();
         }
 
         public async Task HandleValidSubmitAsync()
         {
-            if (asset.Id == Guid.Empty)
+            if (IsUpdate)
             {
-                asset.Id = Guid.NewGuid();
-                await Http.PostAsJsonAsync("api/assets", asset);
+                await Http.PatchAsync($"api/assets/{Asset.Id}", JsonContent.Create(Asset));
             }
             else
             {
-                await Http.PatchAsync($"api/assets/{asset.Id}", JsonContent.Create(asset));
+                await Http.PostAsJsonAsync("api/assets", Asset);
             }
 
             await SavedCallback.InvokeAsync();
 
-            isVisible = false;
+            IsVisible = false;
             StateHasChanged();
         }
 
@@ -77,29 +77,8 @@ namespace WebApp.Pages.Assets
             await Http.DeleteAsync($"api/assets/{id}");
             await RemovedCallback.InvokeAsync();
 
-            isVisible = false;
+            IsVisible = false;
             StateHasChanged();
-        }
-
-        public class Asset
-        {
-            public Guid Id { get; set; }
-
-            [Required]
-            [StringLength(30, MinimumLength = 3)]
-            public string Name { get; set; }
-
-            [Required]
-            [StringLength(30, MinimumLength = 3)]
-            public string Broker { get; set; }
-
-            [Required]
-            [StringLength(30, MinimumLength = 3)]
-            public string Category { get; set; }
-
-            [Required]
-            [StringLength(3, MinimumLength = 3)]
-            public string Currency { get; set; }
         }
     }
 }

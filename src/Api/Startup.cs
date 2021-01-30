@@ -5,10 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MediatR;
-using Api.Core.Application.Assets;
 using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Core.Application.Assets;
+using Core;
 
 namespace Api
 {
@@ -25,7 +26,7 @@ namespace Api
         {
             services.AddControllers();
 
-            services.AddMediatR(typeof(Startup));
+            services.AddMediatR(typeof(Startup), typeof(CoreAssemblyMarker));
             services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<IAssetsRepository, AssetsRepository>();

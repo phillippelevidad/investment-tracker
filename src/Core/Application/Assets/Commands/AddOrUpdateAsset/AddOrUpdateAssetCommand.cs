@@ -1,12 +1,12 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.Functional;
 using MediatR;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Api.Core.Application.Assets.Commands.AddAsset
+namespace Core.Application.Assets.Commands.AddOrUpdateAsset
 {
-    public class UpdateAssetCommand : IRequest<Result>
+    public class AddOrUpdateAssetCommand : IRequest<Result>
     {
         [Required]
         [NotNull]

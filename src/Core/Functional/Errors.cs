@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Shared.FunctionalExtensions
+namespace Core.Functional
 {
     public class Errors : List<KeyValuePair<string, Exception>>
     {
@@ -14,20 +14,17 @@ namespace Shared.FunctionalExtensions
 
         public Errors(IEnumerable<string> errors)
         {
-            foreach (var error in errors)
-                Add(new KeyValuePair<string, Exception>(error, new Exception(error)));
+            foreach (var error in errors) Add(error);
         }
 
         public Errors(IEnumerable<Exception> errors)
         {
-            foreach (var error in errors)
-                Add(new KeyValuePair<string, Exception>(error.Message, error));
+            foreach (var error in errors) Add(error);
         }
 
         public Errors(IEnumerable<KeyValuePair<string, Exception>> errors)
         {
-            foreach (var error in errors)
-                Add(error);
+            foreach (var error in errors) Add(error);
         }
 
         public bool HasErrors => Count > 0;
@@ -47,8 +44,8 @@ namespace Shared.FunctionalExtensions
             Add(new KeyValuePair<string, Exception>(message, exception));
         }
 
-        public string[] GetMessages() => this.Select(item => item.Key).ToArray();
+        public string[] ListMessages() => this.Select(item => item.Key).ToArray();
 
-        public Exception[] GetExceptions() => this.Select(item => item.Value).ToArray();
+        public Exception[] ListExceptions() => this.Select(item => item.Value).ToArray();
     }
 }

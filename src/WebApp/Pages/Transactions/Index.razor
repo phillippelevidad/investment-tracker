@@ -1,0 +1,53 @@
+﻿@page "/transactions"
+
+@if (transactions == null)
+{
+    <h3>Transactions</h3>
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Transactions</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>Date</td>
+                            <th>Asset</th>
+                            <th>Category &Aacute; Broker</th>
+                            <th>Operation</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Volume</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in transactions)
+                        {
+                            var transactionId = transaction.Id;
+                            <tr>
+                                <td>@transaction.DateTime.ToShortDateString()</td>
+                                <td>@transaction.Asset.Name</td>
+                                <td>@transaction.Asset.Category / @transaction.Asset.Broker</td>
+                                <td>@transaction.Operation</td>
+                                <td>@transaction.Quantity</td>
+                                <td>@transaction.UnitPrice.Value.ToString("N2") @transaction.UnitPrice.Currency</td>
+                                <td>@transaction.Volume.Value.ToString("N2") @transaction.Volume.Currency</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="btn btn-outline-dark" @onclick="AddTransaction">
+                <i class="fas fa-plus"></i>
+                Add
+            </button>
+        </div>
+        <div class="col-md-4">
+            @*<Editor @ref="Editor" SavedCallback="@OnEditorSavedOrRemovedAsync" RemovedCallback="@OnEditorSavedOrRemovedAsync" />*@
+        </div>
+    </div>
+}

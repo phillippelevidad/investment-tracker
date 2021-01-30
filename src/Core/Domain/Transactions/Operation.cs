@@ -1,4 +1,6 @@
-﻿namespace Api.Core.Domain.Transactions
+﻿using Ddd;
+
+namespace Api.Core.Domain.Transactions
 {
     public class Operation : Enumeration<Operation, string>
     {

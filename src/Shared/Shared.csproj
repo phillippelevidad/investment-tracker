@@ -5,8 +5,4 @@
       <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\fluentguard\src\FluentGuard\FluentGuard.csproj" />
-  </ItemGroup>
-
 </Project>

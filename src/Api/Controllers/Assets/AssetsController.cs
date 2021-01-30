@@ -1,8 +1,7 @@
-﻿using Api.Core.Application.Assets.Commands.AddAsset;
-using Api.Core.Domain;
-using Api.Core.Domain.Assets;
-using Api.Data;
+﻿using Api.Data;
 using AutoMapper;
+using Core.Application.Assets.Commands.AddOrUpdateAsset;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +18,13 @@ namespace Api.Controllers.Assets
     {
         private readonly InvestmentDbContext db;
         private readonly IMapper mapper;
+        private readonly IMediator mediator;
 
-        public AssetsController(InvestmentDbContext db, IMapper mapper)
+        public AssetsController(InvestmentDbContext db, IMapper mapper, IMediator mediator)
         {
             this.db = db;
             this.mapper = mapper;
+            this.mediator = mediator;
         }
 
         [HttpGet("{id:guid}")]
@@ -48,52 +49,31 @@ namespace Api.Controllers.Assets
         [HttpPost("")]
         [ProducesResponseType(typeof(AssetDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddAsset(AddAssetCommand dto)
+        public async Task<IActionResult> AddAsset(AddOrUpdateAssetCommand command)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            Asset asset;
+            var result = await mediator.Send(command);
+            if (result.IsFailure)
+                return BadRequest(ModelState.AddErrors(result));
 
-            try
-            {
-                asset = new Asset(dto.Id.Value, dto.Name, dto.Broker, dto.Category, new Currency(dto.Currency));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            await db.Assets.AddAsync(asset);
-            await db.SaveChangesAsync();
-
-            var url = Url.Action(nameof(Get), new { id = dto.Id });
-            return Created(url, dto);
+            var url = Url.Action(nameof(Get), new { id = command.Id });
+            return Created(url, command);
         }
 
         [HttpPatch("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateAsset(Guid id, [FromBody] UpdateAssetCommand dto)
+        public async Task<IActionResult> UpdateAsset(Guid id, [FromBody] AddOrUpdateAssetCommand command)
         {
             var asset = await db.Assets.FindAsync(id);
             if (asset == null) return NotFound();
 
-            try
-            {
-                asset.Name = dto.Name;
-                asset.Broker = dto.Broker;
-                asset.Category = dto.Category;
-                asset.Currency = new Currency(dto.Currency);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            db.Assets.Update(asset);
-            await db.SaveChangesAsync();
+            var result = await mediator.Send(command);
+            if (result.IsFailure)
+                return BadRequest(ModelState.AddErrors(result));
 
             return NoContent();
         }

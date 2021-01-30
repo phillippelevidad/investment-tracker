@@ -2,7 +2,6 @@
 using Api.Core.Domain.Assets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Transactions;
 
 namespace Api.Data.ModelConfiguration
 {
@@ -26,6 +25,11 @@ namespace Api.Data.ModelConfiguration
                 .HasConversion(
                     currency => currency.Value,
                     str => (Currency)str);
+
+            builder
+                .HasMany(x => x.Transactions)
+                .WithOne(x => x.Asset)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

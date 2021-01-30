@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Ddd;
 using System;
 using System.Collections.Generic;
 
@@ -73,7 +73,7 @@ namespace Api.Core.Domain
 
         public int CompareTo(Money? other)
         {
-            if (other == null) return Value.CompareTo(0M);
+            if (other is null) return Value.CompareTo(0M);
             EnsureSameCurrency(this, other);
             return Value.CompareTo(other.Value);
         }

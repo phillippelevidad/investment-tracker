@@ -1,6 +1,8 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Api.Core.Domain.Transactions;
+using Ddd;
 using FluentGuard;
 using System;
+using System.Collections.Generic;
 
 namespace Api.Core.Domain.Assets
 {
@@ -10,6 +12,7 @@ namespace Api.Core.Domain.Assets
         private string broker;
         private string category;
         private Currency currency;
+        private List<Transaction> transactions;
 
         private Asset()
         {
@@ -56,6 +59,8 @@ namespace Api.Core.Domain.Assets
             get;
             private set;
         }
+
+        public IReadOnlyList<Transaction> Transactions => transactions.AsReadOnly();
 
         private void Validate()
         {

@@ -1,0 +1,59 @@
+﻿@if (IsVisible)
+{
+    <section>
+        <h3>Asset Transaction</h3>
+
+        <EditForm Model="@Transaction" OnValidSubmit="@HandleValidSubmitAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Name</label>
+                <InputDate id="name" @bind-Value="Transaction.DateTime" class="form-control" />
+            </div>
+
+            @*<div class="form-group">
+                <label for="exampleInputEmail1">Broker</label>
+                <InputText id="name" @bind-Value="Transaction.AssetId" class="form-control" />
+            </div>*@
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Broker</label>
+                <InputText id="name" @bind-Value="Transaction.Operation" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Broker</label>
+                <InputNumber id="name" @bind-Value="Transaction.Quantity" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Broker</label>
+                <InputNumber id="name" @bind-Value="Transaction.UnitPrice" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Broker</label>
+                <InputText id="name" @bind-Value="Transaction.Currency" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Broker</label>
+                <InputNumber id="name" @bind-Value="Volume" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check"></i>
+                Save
+            </button>
+
+            @if (Transaction.Id.HasValue)
+            {
+                <button type="button" class="btn btn-outline-danger" @onclick="@(async e => await RemoveAssetAsync(e, Transaction.Id.Value))">
+                    <i class="fas fa-trash"></i>
+                    Remove
+                </button>
+            }
+        </EditForm>
+    </section>
+}

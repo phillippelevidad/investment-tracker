@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
-namespace Api.Core.Domain
+namespace Ddd
 {
     public abstract class Enumeration<TEnum, TKey> : IComparable
         where TEnum : Enumeration<TEnum, TKey>
