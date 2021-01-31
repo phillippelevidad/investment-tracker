@@ -1,4 +1,4 @@
-﻿namespace Ddd
+﻿namespace Core.Ddd
 {
     public interface IDomainEvent
     {

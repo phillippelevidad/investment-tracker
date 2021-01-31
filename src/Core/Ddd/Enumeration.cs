@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
-namespace Ddd
+namespace Core.Ddd
 {
     public abstract class Enumeration<TEnum, TKey> : IComparable
         where TEnum : Enumeration<TEnum, TKey>
@@ -94,11 +94,5 @@ namespace Ddd
             if (other is TEnum otherEnum) return Id.CompareTo(otherEnum.Id);
             throw new ArgumentException("Object is not an Enumeration with the same Id type", nameof(other));
         }
-
-        public static explicit operator Enumeration<TEnum, TKey>(string name)
-            => FromName(name);
-
-        public static explicit operator Enumeration<TEnum, TKey>(TKey id)
-            => FromId(id);
     }
 }

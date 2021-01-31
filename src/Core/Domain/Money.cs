@@ -1,8 +1,8 @@
-﻿using Ddd;
+﻿using Core.Ddd;
 using System;
 using System.Collections.Generic;
 
-namespace Api.Core.Domain
+namespace Core.Domain
 {
     public class Money : ValueObject, IComparable<Money>
     {

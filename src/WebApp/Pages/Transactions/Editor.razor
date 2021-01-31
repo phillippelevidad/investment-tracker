@@ -1,4 +1,6 @@
-﻿@if (IsVisible)
+﻿@using Core.Domain.Transactions
+
+@if (IsVisible)
 {
     <section>
         <h3>Asset Transaction</h3>
@@ -8,46 +10,58 @@
             <ValidationSummary />
 
             <div class="form-group">
-                <label for="exampleInputEmail1">Name</label>
+                <label for="exampleInputEmail1">Date</label>
                 <InputDate id="name" @bind-Value="Transaction.DateTime" class="form-control" />
             </div>
 
-            @*<div class="form-group">
-                <label for="exampleInputEmail1">Broker</label>
-                <InputText id="name" @bind-Value="Transaction.AssetId" class="form-control" />
-            </div>*@
-
             <div class="form-group">
-                <label for="exampleInputEmail1">Broker</label>
-                <InputText id="name" @bind-Value="Transaction.Operation" class="form-control" />
+                <label for="exampleInputEmail1">Asset</label>
+                <InputSelect id="asset" @bind-Value="Transaction.AssetId" class="form-control">
+                    @foreach (var asset in Assets)
+                        {
+                        <option value="@asset.Id">@asset.Name (@asset.Category / @asset.Broker)</option>
+                        }
+                </InputSelect>
             </div>
 
             <div class="form-group">
-                <label for="exampleInputEmail1">Broker</label>
-                <InputNumber id="name" @bind-Value="Transaction.Quantity" class="form-control" />
+                <label for="exampleInputEmail1">Operation</label>
+                <InputSelect id="operation" @bind-Value="Transaction.Operation" class="form-control">
+                    @foreach (var op in Operation.ListAll())
+                    {
+                        <option value="@op.Id">@op.Name</option>
+                    }
+                </InputSelect>
             </div>
 
             <div class="form-group">
-                <label for="exampleInputEmail1">Broker</label>
-                <InputNumber id="name" @bind-Value="Transaction.UnitPrice" class="form-control" />
+                <label for="exampleInputEmail1">Quantity</label>
+                <InputNumber id="quantity" @bind-Value="Transaction.Quantity" class="form-control" />
             </div>
 
             <div class="form-group">
-                <label for="exampleInputEmail1">Broker</label>
-                <InputText id="name" @bind-Value="Transaction.Currency" class="form-control" />
+                <label for="exampleInputEmail1">Volume</label>
+                <InputNumber id="volume" @bind-Value="Volume" class="form-control" />
             </div>
 
             <div class="form-group">
-                <label for="exampleInputEmail1">Broker</label>
-                <InputNumber id="name" @bind-Value="Volume" class="form-control" />
+                <label for="exampleInputEmail1">Unit Price</label>
+                <InputNumber id="unitPrice" @bind-Value="Transaction.UnitPrice" class="form-control" />
             </div>
 
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-check"></i>
-                Save
-            </button>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Currency</label>
+                <InputText id="currency" @bind-Value="Transaction.Currency" class="form-control" />
+            </div>
 
-            @if (Transaction.Id.HasValue)
+            @if (IsNew)
+            {
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i>
+                    Save
+                </button>
+            }
+            else
             {
                 <button type="button" class="btn btn-outline-danger" @onclick="@(async e => await RemoveAssetAsync(e, Transaction.Id.Value))">
                     <i class="fas fa-trash"></i>

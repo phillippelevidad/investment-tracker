@@ -1,8 +1,10 @@
-﻿using Api.Core.Application.Transactions.Commands.AddTransaction;
+﻿using Core.Application.Transactions.Commands.AddTransaction;
+using Core.Domain.Transactions;
 using Microsoft.AspNetCore.Components;
 using Shared.Dtos;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -13,10 +15,18 @@ namespace WebApp.Pages.Transactions
     {
         protected AddTransactionCommand Transaction { get; set; }
         protected List<AssetDto> Assets { get; set; }
-        protected decimal Volume { get; set; }
+        protected decimal Volume
+        {
+            get => (decimal)(Transaction.Quantity ?? 0d) * (Transaction.UnitPrice ?? 0m);
+            set
+            {
+                if (Transaction.Quantity == 0) Transaction.Quantity = 1;
+                Transaction.UnitPrice = value / (decimal)Transaction.Quantity;
+            }
+        }
 
         protected bool IsVisible { get; set; }
-        protected bool BlockFields { get; set; }
+        protected bool IsNew { get; set; }
 
         [Parameter] public EventCallback SavedCallback { get; set; }
         [Parameter] public EventCallback RemovedCallback { get; set; }
@@ -36,15 +46,22 @@ namespace WebApp.Pages.Transactions
                 DateTime = dto.DateTime
             };
 
-            Assets = await Http.GetFromJsonAsync<List<AssetDto>>("api/assets");
-            BlockFields = true;
+            IsNew = false;
             StateHasChanged();
         }
 
-        public void Reset()
+        public async Task ResetAsync()
         {
-            Transaction = new AddTransactionCommand();
-            BlockFields = false;
+            Assets = await Http.GetFromJsonAsync<List<AssetDto>>("api/assets");
+            Transaction = new AddTransactionCommand
+            {
+                Id = Guid.NewGuid(),
+                DateTime = DateTime.Now,
+                AssetId = Assets.FirstOrDefault()?.Id,
+                Operation = Operation.ListAllIds().First()
+            };
+
+            IsNew = true;
         }
 
         public void Show()
@@ -61,7 +78,6 @@ namespace WebApp.Pages.Transactions
 
         public async Task HandleValidSubmitAsync()
         {
-            Transaction.Id = Guid.NewGuid();
             await Http.PostAsJsonAsync("api/transactions", Transaction);
 
             await SavedCallback.InvokeAsync();

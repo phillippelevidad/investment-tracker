@@ -1,5 +1,5 @@
-﻿using Api.Core.Domain;
-using Api.Core.Domain.Transactions;
+﻿using Core.Domain;
+using Core.Domain.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,7 +14,7 @@ namespace Api.Data.ModelConfiguration
             builder.Property(x => x.Operation)
                 .HasConversion(
                     operation => operation.Id,
-                    str => Operation.FromName(str));
+                    str => Operation.FromId(str));
 
             builder.OwnsOne(x => x.UnitPrice, b =>
             {

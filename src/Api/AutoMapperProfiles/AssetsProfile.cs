@@ -1,8 +1,8 @@
-﻿using Api.Core.Domain.Assets;
-using AutoMapper;
+﻿using AutoMapper;
+using Core.Domain.Assets;
 using Shared.Dtos;
 
-namespace Api.AutoMapper
+namespace Api.AutoMapperProfiles
 {
     public class AssetsProfile : Profile
     {

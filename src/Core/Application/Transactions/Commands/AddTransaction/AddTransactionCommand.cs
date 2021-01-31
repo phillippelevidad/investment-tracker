@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using OperationEnum = Api.Core.Domain.Transactions.Operation;
+using OperationEnum = Core.Domain.Transactions.Operation;
 
-namespace Api.Core.Application.Transactions.Commands.AddTransaction
+namespace Core.Application.Transactions.Commands.AddTransaction
 {
     public class AddTransactionCommand : IValidatableObject
     {

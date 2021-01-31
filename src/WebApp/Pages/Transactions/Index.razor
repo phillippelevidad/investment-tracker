@@ -16,7 +16,7 @@ else
                         <tr>
                             <td>Date</td>
                             <th>Asset</th>
-                            <th>Category &Aacute; Broker</th>
+                            <th>Category / Broker</th>
                             <th>Operation</th>
                             <th>Quantity</th>
                             <th>Price</th>
@@ -41,13 +41,13 @@ else
                 </table>
             </div>
 
-            <button class="btn btn-outline-dark" @onclick="AddTransaction">
+            <button class="btn btn-outline-dark" @onclick="AddTransactionAsync">
                 <i class="fas fa-plus"></i>
                 Add
             </button>
         </div>
         <div class="col-md-4">
-            @*<Editor @ref="Editor" SavedCallback="@OnEditorSavedOrRemovedAsync" RemovedCallback="@OnEditorSavedOrRemovedAsync" />*@
+            <Editor @ref="Editor" SavedCallback="@OnEditorSavedOrRemovedAsync" RemovedCallback="@OnEditorSavedOrRemovedAsync" />
         </div>
     </div>
 }

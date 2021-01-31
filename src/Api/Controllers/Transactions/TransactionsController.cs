@@ -1,8 +1,8 @@
-﻿using Api.Core.Application.Transactions.Commands.AddTransaction;
-using Api.Core.Domain;
-using Api.Core.Domain.Transactions;
-using Api.Data;
+﻿using Api.Data;
 using AutoMapper;
+using Core.Application.Transactions.Commands.AddTransaction;
+using Core.Domain;
+using Core.Domain.Transactions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

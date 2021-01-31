@@ -1,6 +1,6 @@
-﻿using Ddd;
+﻿using Core.Ddd;
 
-namespace Api.Core.Domain.Transactions
+namespace Core.Domain.Transactions
 {
     public class Operation : Enumeration<Operation, string>
     {

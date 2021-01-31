@@ -1,5 +1,5 @@
-﻿using Api.Core.Domain;
-using Api.Core.Domain.Assets;
+﻿using Core.Domain;
+using Core.Domain.Assets;
 using System;
 using System.Linq;
 

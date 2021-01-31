@@ -1,5 +1,5 @@
-﻿using Api.Core.Domain.Assets;
-using Api.Core.Domain.Transactions;
+﻿using Core.Domain.Assets;
+using Core.Domain.Transactions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Data

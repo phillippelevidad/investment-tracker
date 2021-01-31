@@ -32,9 +32,9 @@ namespace WebApp.Pages.Transactions
             StateHasChanged();
         }
 
-        private void AddTransaction()
+        private async Task AddTransactionAsync()
         {
-            Editor.Reset();
+            await Editor.ResetAsync();
             Editor.Show();
         }
 

@@ -1,4 +1,4 @@
-﻿using Api.Core.Domain.Assets;
+﻿using Core.Domain.Assets;
 using Core.Application.Assets;
 using Core.Functional;
 using System;

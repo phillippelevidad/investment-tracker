@@ -1,10 +1,10 @@
-﻿using Api.Core.Domain.Transactions;
-using Ddd;
+﻿using Core.Ddd;
+using Core.Domain.Transactions;
 using FluentGuard;
 using System;
 using System.Collections.Generic;
 
-namespace Api.Core.Domain.Assets
+namespace Core.Domain.Assets
 {
     public class Asset : Entity<Guid>
     {

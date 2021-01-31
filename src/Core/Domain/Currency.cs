@@ -1,9 +1,9 @@
-﻿using Ddd;
+﻿using Core.Ddd;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Api.Core.Domain
+namespace Core.Domain
 {
     public class Currency : ValueObject
     {

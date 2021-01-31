@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Core.Domain.Transactions;
 using Shared.Dtos;
-using System.Transactions;
 
-namespace Api.AutoMapper
+namespace Api.AutoMapperProfiles
 {
     public class TransactionsProfile : Profile
     {

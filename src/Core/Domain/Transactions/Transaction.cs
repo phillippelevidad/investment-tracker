@@ -1,8 +1,8 @@
-﻿using Api.Core.Domain.Assets;
-using Ddd;
+﻿using Core.Ddd;
+using Core.Domain.Assets;
 using System;
 
-namespace Api.Core.Domain.Transactions
+namespace Core.Domain.Transactions
 {
     public class Transaction : Entity<Guid>
     {
