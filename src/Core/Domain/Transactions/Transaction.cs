@@ -18,11 +18,11 @@ namespace Core.Domain.Transactions
             DateTime = dateTime;
         }
 
-        public Asset Asset { get; }
-        public Operation Operation { get; }
-        public float Quantity { get; }
-        public Money UnitPrice { get; }
-        public DateTime DateTime { get; }
+        public Asset Asset { get; private set; }
+        public Operation Operation { get; private set; }
+        public float Quantity { get; private set; }
+        public Money UnitPrice { get; private set; }
+        public DateTime DateTime { get; private set; }
 
         public Money Volume => new Money((decimal)Quantity * UnitPrice.Value, UnitPrice.Currency);
         public Money LiquidVolume => new Money(Volume.Value * Operation.Multiplier, UnitPrice.Currency);
