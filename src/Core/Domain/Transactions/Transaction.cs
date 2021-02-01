@@ -4,7 +4,7 @@ using System;
 
 namespace Core.Domain.Transactions
 {
-    public class Transaction : Entity<Guid>
+    public class Transaction : AggregateRoot<Guid>
     {
         private Transaction() { }
 

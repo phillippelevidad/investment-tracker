@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Core.Domain.Assets
 {
-    public class Asset : Entity<Guid>
+    public class Asset : AggregateRoot<Guid>
     {
         private string name;
         private string broker;
