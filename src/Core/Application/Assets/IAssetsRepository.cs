@@ -12,8 +12,8 @@ namespace Core.Application.Assets
 
         Task<Asset?> FindAsync(Guid id, CancellationToken cancellationToken = default);
 
-        Task<Result> UpdateAsync(Asset asset, CancellationToken cancellationToken = default);
-
         Task<Result> RemoveAsync(Asset asset, CancellationToken cancellationToken = default);
+
+        Task<Result> UpdateAsync(Asset asset, CancellationToken cancellationToken = default);
     }
 }

@@ -16,22 +16,29 @@ namespace Api.Data
             this.db = db;
         }
 
-        public async Task<Result> AddAsync(Asset asset, CancellationToken cancellationToken)
+        public async Task<Result> AddAsync(Asset asset, CancellationToken cancellationToken = default)
         {
             await db.Assets.AddAsync(asset, cancellationToken);
             await db.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
 
-        public async Task<Asset?> FindAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Asset?> FindAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await db.Assets.FindAsync(id);
+            return await db.Assets.FindAsync(new object[] { id }, cancellationToken: cancellationToken);
         }
 
-        public async Task<Result> UpdateAsync(Asset asset, CancellationToken cancellationToken)
+        public async Task<Result> RemoveAsync(Asset asset, CancellationToken cancellationToken = default)
+        {
+            db.Assets.Remove(asset);
+            await db.SaveChangesAsync(cancellationToken);
+            return Result.Success();
+        }
+
+        public async Task<Result> UpdateAsync(Asset asset, CancellationToken cancellationToken = default)
         {
             db.Assets.Update(asset);
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
     }
