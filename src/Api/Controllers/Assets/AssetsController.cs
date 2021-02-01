@@ -1,13 +1,14 @@
-﻿using Api.Data;
+﻿using Api.Queries.Assets.AssetExists;
+using Api.Queries.Assets.GetAssetDetails;
+using Api.Queries.Assets.ListAllAssets;
 using AutoMapper;
 using Core.Application.Assets.Commands.AddOrUpdateAsset;
+using Core.Application.Assets.Commands.RemoveAsset;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Shared.Dtos;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Api.Controllers.Assets
@@ -16,15 +17,13 @@ namespace Api.Controllers.Assets
     [Route("api/assets")]
     public class AssetsController : Controller
     {
-        private readonly InvestmentDbContext db;
-        private readonly IMapper mapper;
         private readonly IMediator mediator;
+        private readonly IMapper mapper;
 
-        public AssetsController(InvestmentDbContext db, IMapper mapper, IMediator mediator)
+        public AssetsController(IMediator mediator, IMapper mapper)
         {
-            this.db = db;
-            this.mapper = mapper;
             this.mediator = mediator;
+            this.mapper = mapper;
         }
 
         [HttpGet("{id:guid}")]
@@ -32,17 +31,16 @@ namespace Api.Controllers.Assets
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(Guid id)
         {
-            var asset = await db.Assets.FindAsync(id);
-            if (asset == null) return NotFound();
-            return Ok(mapper.Map<AssetDto>(asset));
+            var dto = await mediator.Send(new GetAssetDetailsQuery(id));
+            if (dto == null) return NotFound();
+            return Ok(dto);
         }
 
         [HttpGet("")]
         [ProducesResponseType(typeof(AssetDto[]), StatusCodes.Status200OK)]
         public async Task<IActionResult> ListAll()
         {
-            var assets = await db.Assets.ToListAsync();
-            var dtos = assets.Select(asset => mapper.Map<AssetDto>(asset));
+            var dtos = await mediator.Send(new ListAllAssetsQuery());
             return Ok(dtos);
         }
 
@@ -68,8 +66,8 @@ namespace Api.Controllers.Assets
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateAsset(Guid id, [FromBody] AddOrUpdateAssetCommand command)
         {
-            var asset = await db.Assets.FindAsync(id);
-            if (asset == null) return NotFound();
+            var exists = await mediator.Send(new AssetExistsQuery(id));
+            if (!exists) return NotFound();
 
             var result = await mediator.Send(command);
             if (result.IsFailure)
@@ -83,11 +81,12 @@ namespace Api.Controllers.Assets
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RemoveAsset(Guid id)
         {
-            var asset = await db.Assets.FindAsync(id);
-            if (asset == null) return NotFound();
+            var exists = await mediator.Send(new AssetExistsQuery(id));
+            if (!exists) return NotFound();
 
-            db.Assets.Remove(asset);
-            await db.SaveChangesAsync();
+            var result = await mediator.Send(new RemoveAssetCommand(id));
+            if (result.IsFailure)
+                return BadRequest(ModelState.AddErrors(result));
 
             return NoContent();
         }

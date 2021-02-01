@@ -8,10 +8,12 @@ namespace Core.Application.Assets
 {
     public interface IAssetsRepository
     {
-        Task<Result> AddAsync(Asset asset, CancellationToken cancellationToken);
+        Task<Result> AddAsync(Asset asset, CancellationToken cancellationToken = default);
 
-        Task<Asset?> FindAsync(Guid id, CancellationToken cancellationToken);
+        Task<Asset?> FindAsync(Guid id, CancellationToken cancellationToken = default);
 
-        Task<Result> UpdateAsync(Asset asset, CancellationToken cancellationToken);
+        Task<Result> UpdateAsync(Asset asset, CancellationToken cancellationToken = default);
+
+        Task<Result> RemoveAsync(Asset asset, CancellationToken cancellationToken = default);
     }
 }
