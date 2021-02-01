@@ -44,6 +44,7 @@ namespace Api.Controllers.Transactions
         {
             var transactions = await db.Transactions
                 .Include(t => t.Asset)
+                .OrderByDescending(t => t.DateTime)
                 .ToListAsync();
             var dtos = transactions.Select(tran => mapper.Map<TransactionDto>(tran));
             return Ok(dtos);

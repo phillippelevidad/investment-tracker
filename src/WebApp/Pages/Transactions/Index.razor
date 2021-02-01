@@ -28,7 +28,11 @@ else
                         {
                             var transactionId = transaction.Id;
                             <tr>
-                                <td>@transaction.DateTime.ToShortDateString()</td>
+                                <td>
+                                    <button @onclick="@(async e => await EditTransactionAsync(e, transactionId))" class="btn btn-link btn-anchor">
+                                        @transaction.DateTime.ToShortDateString()
+                                    </button>
+                                </td>
                                 <td>@transaction.Asset.Name</td>
                                 <td>@transaction.Asset.Category / @transaction.Asset.Broker</td>
                                 <td>@transaction.Operation</td>

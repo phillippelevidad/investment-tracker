@@ -34,6 +34,8 @@ namespace WebApp.Pages.Transactions
 
         public async Task LoadTransactionAsync(Guid id)
         {
+            Assets = await Http.GetFromJsonAsync<List<AssetDto>>("api/assets");
+
             var dto = await Http.GetFromJsonAsync<TransactionDto>($"api/transactions/{id}");
             Transaction = new AddTransactionCommand
             {
@@ -53,6 +55,7 @@ namespace WebApp.Pages.Transactions
         public async Task ResetAsync()
         {
             Assets = await Http.GetFromJsonAsync<List<AssetDto>>("api/assets");
+
             Transaction = new AddTransactionCommand
             {
                 Id = Guid.NewGuid(),

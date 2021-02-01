@@ -28,9 +28,9 @@
                 <label for="exampleInputEmail1">Operation</label>
                 <InputSelect id="operation" @bind-Value="Transaction.Operation" class="form-control">
                     @foreach (var op in Operation.ListAll())
-                    {
+                        {
                         <option value="@op.Id">@op.Name</option>
-                    }
+                        }
                 </InputSelect>
             </div>
 
